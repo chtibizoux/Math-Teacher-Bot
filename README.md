@@ -1,4 +1,4 @@
-# Teacher Bot
+# Math Teacher Bot
 A discord bot for Maths.
 
 Commandes:
