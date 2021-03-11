@@ -525,23 +525,6 @@ function calculator(message) {
     var easterEggsMessage = goodMessage.toLowerCase();
     if (easterEggsMessage.includes("0+0")) {
         message.channel.send(":thinking:mmmmmmmmmmmhhhh:thinking:", {files: ["./Images/Tête_à_Toto.png"]});
-    }else if (easterEggsMessage.includes("couille") || goodMessage.includes("c******") || goodMessage.includes("co*****") || goodMessage.includes("cou****")) {
-        message.react("😋");
-        message.channel.send("https://tenor.com/view/nibbles-feed-me-hungry-gif-12247158");
-        message.channel.send("A ne pas reproduire sous peine de ban (pour éviter le spam)");
-    }else if (easterEggsMessage.includes("jul")) {
-        message.react("👎");
-        message.channel.send("0");
-    }else if (easterEggsMessage.includes("math")) {
-        message.react("😉");
-    }else if (easterEggsMessage.includes("invisible")) {
-        message.channel.send("deuxvisible");
-    }else if (easterEggsMessage.includes("2048")) {
-        message.channel.send("", {files: ["./Images/2048.jpg"]});
-    }else if (easterEggsMessage.includes("Que fait tu")) {
-        message.channel.send("", {files: ["./Images/maths.jpg"]});
-    }else if (easterEggsMessage.includes("Qu' est ce que tu fait")){
-        message.channel.send("", {files: ["./Images/2048.jpg"]});
     }else {
         // Calculator
         if (goodMessage !== "" && !goodMessage.includes("console") && !goodMessage.includes("bot") && !goodMessage.includes("token") && !goodMessage.includes("message") && !goodMessage.includes("discord") && !goodMessage.includes("cheerio") && !goodMessage.includes("fs") && !goodMessage.includes("request")) {
