@@ -585,6 +585,9 @@ function calculator(message) {
                                 if (splitedMessage[i].slice(0, 1) === "(") {
                                     splitedMessage[i] = "*" + splitedMessage[i];
                                 }
+                                if (i < splitedMessage.length - 1 && splitedMessage[i] === ""){
+                                    splitedMessage[i] = "*" + splitedMessage[i];
+                                }
                             }
                             goodMessage = splitedMessage.join(letters[y]);
                         }
