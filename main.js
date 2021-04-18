@@ -352,9 +352,8 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
         }
     }
 
-    const buffer = canvas.toBuffer('image/png');
-    fs.writeFileSync('./Images/graph.png', buffer);
-    message.channel.send("", {files: ["./Images/graph.png"]}).then((sent) => {
+	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
+    message.channel.send("", attachment).then((sent) => {
         if (activeMessage !== null) {
             activeMessage.delete();
         }
