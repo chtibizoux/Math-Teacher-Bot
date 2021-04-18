@@ -520,15 +520,18 @@ function calculator(message) {
             // Fonctions
             if ((/^[a-z]\([a-z]\)\=\=/).test(goodMessage)) {
                 var mathFunction = goodMessage.slice(0, 1);
-                var letter = goodMessage.slice(2, goodMessage.indexOf(")=="));
-                var splitedMessage = goodMessage.slice(goodMessage.indexOf(")==") + 3).split(letter);
+                var letter = goodMessage.slice(2, 3);
+                var splitedMessage = goodMessage.slice(6).split(letter);
                 for (var i = 0; i < splitedMessage.length - 1; i++) {
-                    if ((/[0-9]/).test(splitedMessage[i].slice(-1))) {
+                    if ((/[1-9]/).test(splitedMessage[i].slice(-1))) {
                         splitedMessage[i] += "*";
                     }
                 }
                 for (var i = 1; i < splitedMessage.length; i++) {
                     if (splitedMessage[i].slice(0, 1) === "(") {
+                        splitedMessage[i] = "*" + splitedMessage[i];
+                    }
+                    if (i < splitedMessage.length - 1 && splitedMessage[i] === ""){
                         splitedMessage[i] = "*" + splitedMessage[i];
                     }
                 }
