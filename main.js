@@ -254,14 +254,14 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
             ctx.lineTo((canvas.width / 2) - graphX, i * pixelByLine);
             ctx.lineTo((canvas.width / 2) - graphX - graduationsLineWidth, i * pixelByLine);
             ctx.stroke();
-            ctx.fillText(-((i - (lineHeight/2)) + (graphY / pixelByLine)) * zoom, (canvas.width / 2) - graphX - 2, i * pixelByLine + 16);
+            ctx.fillText(-((i - (lineHeight/2)) + (graphY / pixelByLine)) / zoom, (canvas.width / 2) - graphX - 2, i * pixelByLine + 16);
         }
         for (var i = lineHeight/2; i >= 0; i--) {
             ctx.beginPath();
             ctx.lineTo((canvas.width / 2) - graphX, i * pixelByLine);
             ctx.lineTo((canvas.width / 2) - graphX - graduationsLineWidth, i * pixelByLine);
             ctx.stroke();
-            ctx.fillText(-((i - (lineHeight/2)) + (graphY / pixelByLine)) * zoom, (canvas.width / 2) - graphX - 2, i * pixelByLine + 16);
+            ctx.fillText(-((i - (lineHeight/2)) + (graphY / pixelByLine)) / zoom, (canvas.width / 2) - graphX - 2, i * pixelByLine + 16);
         }
     }else {
         if ((canvas.width / 2) - x > 0) {
@@ -354,13 +354,13 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
             ctx.strokeStyle = colorByLetter(functionsToGraph[i]);
             ctx.lineWidth = 4;
             ctx.beginPath();
-            for (var z = canvas.width/2; z <= canvas.width; z++) {
+            for (var z = canvas.width / 2; z <= canvas.width + (canvas.width / 2 / zoom) - (canvas.width / 2) + graphX; z++) {
                 var result = eval(functions[functionsToGraph[i]].split("x").join("(" + (z - (canvas.width/2)) / pixelByLine + ")"));
                 ctx.lineTo((z - (canvas.width/2)) * zoom + (canvas.width/2) - graphX, (-result * pixelByLine) * zoom + (canvas.height/2) - graphY);
             }
             ctx.stroke();
             ctx.beginPath();
-            for (var z = canvas.width/2; z >= 0; z--) {
+            for (var z = canvas.width / 2; z >= 0 - (canvas.width / 2 / zoom) + (canvas.width / 2) + graphX; z--) {
                 var result = eval(functions[functionsToGraph[i]].split("x").join("(" + (z - (canvas.width/2)) / pixelByLine + ")"));
                 ctx.lineTo((z - (canvas.width/2)) * zoom + (canvas.width/2) - graphX, (-result * pixelByLine) * zoom + (canvas.height/2) - graphY);
             }
@@ -671,7 +671,6 @@ function calculator(message) {
                         if (letters.length > 0) {
                             var messageToSend = "__**Solutions:**__\n```";
                             for (var i = 0; i < letters.length; i++) {
-                                console.log(nerdamer.solve(goodMessage, letters[i]).symbol.elements);
                                 var answer = nerdamer.solve(goodMessage, letters[i]).toString().replace("[", "").replace("]", "");
                                 if (answer !== "") {
                                     if (answer.includes(",")) {
