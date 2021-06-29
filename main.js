@@ -9,14 +9,19 @@ require('nerdamer/Algebra');
 require('nerdamer/Calculus');
 require('nerdamer/Solve');
 require('nerdamer/Extra');
+
 const bot = new discord.Client();
+
+const disbut = require('discord-buttons');
+disbut(bot);
+
 if (!fs.existsSync("config.json")) {
     console.error("Please create config.json file config.json.exemple is an exemple");
 }
 var config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 
 const fontSize = 14;
-const pixelByLine = 30;
+const pixelByLine = 30; 
 var functions = {};
 var functionsToGraph = [];
 var graphX = 0;
@@ -33,7 +38,9 @@ var helps = JSON.parse(fs.readFileSync("./helps.json", "utf8"));
 
 bot.on('ready', () => {
     console.log("This Bot is online!");
-    bot.user.setActivity("type )help");
+    bot.user.setActivity("type )help", {
+        type: 'WATCHING'
+    });
 });
 
 bot.on("message", (message) => {
@@ -57,12 +64,12 @@ bot.on("message", (message) => {
             y = 0;
             zoom = 1;
             functionsToGraph = message.content.slice(7).split(" ");
-            message.react("⬅️");
-            message.react("➡️");
-            message.react("⬆️");
-            message.react("⬇️");
-            message.react("➕");
-            message.react("➖");
+            // message.react("⬅️");
+            // message.react("➡️");
+            // message.react("⬆️");
+            // message.react("⬇️");
+            // message.react("➕");
+            // message.react("➖");
             graph(message, 0, 0, 0);
         }else if (message.content.startsWith(")functions")) {
             fun(message);
@@ -357,22 +364,76 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
         }
     }
 
-	const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
-    message.channel.send("", attachment).then((sent) => {
-        if (activeMessage !== null) {
-            activeMessage.delete();
-        }
-        activeMessage = sent;
+    let buttonRow = new disbut.MessageActionRow()
+        .addComponent(new disbut.MessageButton()
+            .setLabel("◄")
+            .setStyle("blurple")
+            .setID("right_button"))
+        .addComponent(new disbut.MessageButton()
+            .setLabel("▲")
+            .setStyle("blurple")
+            .setID("up_button"))
+        .addComponent(new disbut.MessageButton()
+            .setLabel("►")
+            .setStyle("blurple")
+            .setID("left_button"));
+    let buttonRow2 = new disbut.MessageActionRow()
+        .addComponent(new disbut.MessageButton()
+            .setLabel("＋")
+            .setStyle("blurple")
+            // .setEmoji("➕")
+            .setID("plus_button"))
+        .addComponent(new disbut.MessageButton()
+            .setLabel("▼")
+            .setStyle("blurple")
+            .setID("down_button"))
+        .addComponent(new disbut.MessageButton()
+            .setLabel("－")
+            .setStyle("blurple")
+            // .setEmoji("➖")
+            .setID("minus_button"));
+            
+    const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
+    bot.users.fetch("605304691227885599").then((user) => {
+        user.send("", attachment).then((sent) => {
+            if (activeMessage) {
+                activeMessage.edit(sent.attachments.first().url, {
+                    components: [buttonRow, buttonRow2]
+                });
+            } else {
+                message.channel.send(sent.attachments.first().url, {
+                    components: [buttonRow, buttonRow2]
+                }).then((sent) => {
+                    activeMessage = sent;
+                });
+            }
+        });
     });
-    // const buffer = canvas.toBuffer('image/png');
-    // fs.writeFileSync('./images/graph.png', buffer);
-    // message.channel.send("https://clementsongis.cf/graph.png").then((sent) => {
+
+    // Resend message
+    // const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
+    // message.channel.send("", {
+    //         files: [attachment],
+    //         components: [buttonRow, buttonRow2]
+    //     }).then((sent) => {
+    //     if (activeMessage !== null) {
+    //         activeMessage.delete();
+    //     }
     //     activeMessage = sent;
     // });
+
+    // Use external server
+    // const buffer = canvas.toBuffer('image/png');
+    // fs.writeFileSync('./images/graph.png', buffer);
     // if (activeMessage) {
     //     activeMessage.edit("https://clementsongis.cf/graph.png");
+    // } else {
+    //     message.channel.send("https://clementsongis.cf/graph.png").then((sent) => {
+    //         activeMessage = sent;
+    //     });
     // }
 }
+
 function colorByLetter(letter) {
     switch (letter) {
         case "a":
@@ -457,6 +518,7 @@ function colorByLetter(letter) {
             return "#ff0000";
     }
 }
+
 function fun(message) {
     if (Object.keys(functions).length > 0) {
         var messageToSend = "__**Fonctions:**__\n```";
@@ -631,44 +693,61 @@ function calculator(message) {
     }
 }
 
-bot.on('messageReactionAdd', (reaction, user) => {
-    if (reaction.message.author.id !== bot.user.id) {
-        if (user.id != bot.user.id) {
-            if (reaction.emoji.name === "⬅️") {
-                graph(reaction.message, -1, 0, 0);
-            }else if (reaction.emoji.name === "➡️") {
-                graph(reaction.message, 1, 0, 0);
-            }else if (reaction.emoji.name === "⬆️") {
-                graph(reaction.message, 0, -1, 0);
-            }else if (reaction.emoji.name === "⬇️") {
-                graph(reaction.message, 0, 1, 0);
-            }else if (reaction.emoji.name === "➕") {
-                graph(reaction.message, 0, 0, 1);
-            }else if (reaction.emoji.name === "➖") {
-                graph(reaction.message, 0, 0, -1);
-            }
-        }
-    }
-});
+// bot.on('messageReactionAdd', (reaction, user) => {
+//     if (reaction.message.author.id !== bot.user.id) {
+//         if (user.id != bot.user.id) {
+//             if (reaction.emoji.name === "⬅️") {
+//                 graph(reaction.message, -1, 0, 0);
+//             }else if (reaction.emoji.name === "➡️") {
+//                 graph(reaction.message, 1, 0, 0);
+//             }else if (reaction.emoji.name === "⬆️") {
+//                 graph(reaction.message, 0, -1, 0);
+//             }else if (reaction.emoji.name === "⬇️") {
+//                 graph(reaction.message, 0, 1, 0);
+//             }else if (reaction.emoji.name === "➕") {
+//                 graph(reaction.message, 0, 0, 1);
+//             }else if (reaction.emoji.name === "➖") {
+//                 graph(reaction.message, 0, 0, -1);
+//             }
+//         }
+//     }
+// });
 
-bot.on('messageReactionRemove', (reaction, user) => {
-    if (reaction.message.author.id !== bot.user.id) {
-        if (user.id != bot.user.id) {
-            if (reaction.emoji.name === "⬅️") {
-                graph(reaction.message, -1, 0, 0);
-            }else if (reaction.emoji.name === "➡️") {
-                graph(reaction.message, 1, 0, 0);
-            }else if (reaction.emoji.name === "⬆️") {
-                graph(reaction.message, 0, -1, 0);
-            }else if (reaction.emoji.name === "⬇️") {
-                graph(reaction.message, 0, 1, 0);
-            }else if (reaction.emoji.name === "➕") {
-                graph(reaction.message, 0, 0, 1);
-            }else if (reaction.emoji.name === "➖") {
-                graph(reaction.message, 0, 0, -1);
-            }
-        }
+// bot.on('messageReactionRemove', (reaction, user) => {
+//     if (reaction.message.author.id !== bot.user.id) {
+//         if (user.id != bot.user.id) {
+//             if (reaction.emoji.name === "⬅️") {
+//                 graph(reaction.message, -1, 0, 0);
+//             }else if (reaction.emoji.name === "➡️") {
+//                 graph(reaction.message, 1, 0, 0);
+//             }else if (reaction.emoji.name === "⬆️") {
+//                 graph(reaction.message, 0, -1, 0);
+//             }else if (reaction.emoji.name === "⬇️") {
+//                 graph(reaction.message, 0, 1, 0);
+//             }else if (reaction.emoji.name === "➕") {
+//                 graph(reaction.message, 0, 0, 1);
+//             }else if (reaction.emoji.name === "➖") {
+//                 graph(reaction.message, 0, 0, -1);
+//             }
+//         }
+//     }
+// });
+
+bot.on('clickButton', (button) => {
+    if (button.id === "right_button") {
+        graph(button.message, -1, 0, 0);
+    } else if (button.id === "left_button") {
+        graph(button.message, 1, 0, 0);
+    } else if (button.id === "up_button") {
+        graph(button.message, 0, -1, 0);
+    } else if (button.id === "down_button") {
+        graph(button.message, 0, 1, 0);
+    } else if (button.id === "plus_button") {
+        graph(button.message, 0, 0, 1);
+    } else if (button.id === "minus_button") {
+        graph(button.message, 0, 0, -1);
     }
+    button.defer();
 });
 
 bot.login(config.token);
